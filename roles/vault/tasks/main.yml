@@ -13,35 +13,28 @@
     createhome: "no"
     state: present
 
-- name: Install prerequisites
-  package:
-    name: "{{ item }}"
-    update_cache: yes
-  with_items: "{{ vault_install_prerequisites }}"
-  become: yes
+- name: Import Hashicorp apt key
+  apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+  become: true
 
-- name: Download binary
-  get_url:
-    url: https://releases.hashicorp.com/vault/{{vault_version}}/vault_{{vault_version}}_linux_amd64.zip
-    dest: /tmp/vault_{{vault_version}}_linux_amd64.zip
-    owner: "{{ vault_user }}"
-    group: "{{ vault_group }}"
-    mode: 0755
-    checksum: "{{vault_checksum}}"
-  register: vault_download
+- name: Install Hashicorp Vault deb repository
+  apt_repository:
+    repo: deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main
+    state: present
+  become: true
 
-- name: "Unzip vault archive"
-  unarchive:
-    src: "{{ vault_download.dest }}"
-    dest: /usr/local/bin
-    copy: no
-    owner: "{{ vault_user }}"
-    group: "{{ vault_group }}"
-    mode: 0755
+- name: Install Hashicorp Vault
+  apt:
+    name: vault
+    state: present
+    update_cache: true
+  become: true
 
 - name: "Set vault binary capabilities"
   capabilities:
-    path: /usr/local/bin/vault
+    path: /usr/bin/vault
     capability: cap_ipc_lock+ep
     state: present
 

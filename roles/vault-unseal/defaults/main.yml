@@ -1,2 +1,2 @@
 ---
-unseal_keys_dir_output: "{{ playbook_dir }}/unsealKey"
+unseal_keys_dir_output: "/var/opt/vault/unsealKey"

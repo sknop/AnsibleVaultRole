@@ -2,13 +2,13 @@
   file:
     path: "{{ unseal_keys_dir_output }}"
     state: directory
-  delegate_to: localhost
+    recurse: yes
 
 - name: Create root key directories
   file:
     path: "{{ root_token_dir_output }}"
     state: directory
-  delegate_to: localhost
+    recurse: yes
 
 - name: Initialise Vault operator
   shell: vault operator init -key-shares=5 -key-threshold=3 -format json
@@ -25,10 +25,8 @@
     dest: "{{ unseal_keys_dir_output }}/unseal_key_{{ item.0 }}"
     content: "{{ item.1 }}"
   with_indexed_items: "{{ vault_init_parsed.unseal_keys_hex }}"
-  delegate_to: localhost
 
 - name: Write root token to file
   copy:
     content: "{{ vault_init_parsed.root_token }}"
-    dest: "{{root_token_dir_output}}/rootkey"
-  delegate_to: localhost
+    dest: "{{ root_token_dir_output }}/rootkey"
