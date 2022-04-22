@@ -1,7 +1,13 @@
+- name: Get unseal key files
+  find:
+    paths: "{{ unseal_keys_dir_output }}"
+  register: found_key_files
+  tags: unseal
+
 - name: Reading unseal key contents
-  command: cat {{item}}
+  command: cat {{ item.path }}
   register: unseal_keys
-  with_fileglob: "{{ unseal_keys_dir_output }}/*"
+  with_items: "{{ found_key_files.files }}"
   tags: unseal
 
 - name: Unseal vault with unseal keys

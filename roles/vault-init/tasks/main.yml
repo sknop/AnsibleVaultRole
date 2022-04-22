@@ -10,23 +10,39 @@
     state: directory
     recurse: yes
 
+- name: Check status of vault
+  shell: vault status -format=yaml
+  environment:
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  register: vault_status_raw
+  failed_when:
+    - vault_status_raw.rc == 1
+
+- name: save vault_status
+  set_fact:
+    vault_status: "{{ vault_status_raw.stdout | from_yaml }}"
+
 - name: Initialise Vault operator
   shell: vault operator init -key-shares=5 -key-threshold=3 -format json
   environment:
     VAULT_ADDR: "http://127.0.0.1:8200"
   register: vault_init_results
+  when: not vault_status.initialized | bool
 
 - name: Parse output of vault init
   set_fact:
     vault_init_parsed: "{{ vault_init_results.stdout | from_json }}"
+  when: not vault_status.initialized | bool
 
 - name: Write unseal keys to files
   copy:
     dest: "{{ unseal_keys_dir_output }}/unseal_key_{{ item.0 }}"
     content: "{{ item.1 }}"
   with_indexed_items: "{{ vault_init_parsed.unseal_keys_hex }}"
+  when: not vault_status.initialized | bool
 
 - name: Write root token to file
   copy:
     content: "{{ vault_init_parsed.root_token }}"
     dest: "{{ root_token_dir_output }}/rootkey"
+  when: not vault_status.initialized | bool
