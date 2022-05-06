@@ -58,3 +58,9 @@
     name: vault
     state: started
     enabled: yes
+
+- name: Install Java 11 (for keytool)
+  apt:
+    name: openjdk-11-jdk
+    state: present
+

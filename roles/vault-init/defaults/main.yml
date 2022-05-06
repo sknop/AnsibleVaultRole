@@ -1,3 +1,2 @@
 ---
 unseal_keys_dir_output: "/var/opt/vault/unsealKey"
-root_token_dir_output: "/var/opt/vault/rootKey"

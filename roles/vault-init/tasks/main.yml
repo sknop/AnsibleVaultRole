@@ -4,12 +4,6 @@
     state: directory
     recurse: yes
 
-- name: Create root key directories
-  file:
-    path: "{{ root_token_dir_output }}"
-    state: directory
-    recurse: yes
-
 - name: Check status of vault
   shell: vault status -format=yaml
   environment:
@@ -44,5 +38,15 @@
 - name: Write root token to file
   copy:
     content: "{{ vault_init_parsed.root_token }}"
-    dest: "{{ root_token_dir_output }}/rootkey"
+    dest: "/home/ubuntu/.vault-token"
+    mode: '0600'
+    owner: ubuntu
+    group: ubuntu
+  when: not vault_status.initialized | bool
+
+- name: Copy root token to /root
+  copy:
+    src: /home/ubuntu/.vault-token
+    dest: /root/.vault-token
+    remote_src: True
   when: not vault_status.initialized | bool

@@ -9,7 +9,9 @@
 - hosts: all
   vars:
     unseal_keys_dir_output: "/var/opt/vault/unsealKey"
-    root_token_dir_output: "/var/opt/vault/rootKey"
+  environment:
+    VAULT_ADDR: "http://127.0.0.1:8200"
   roles:
     - vault-init
     - vault-unseal
+    - vault-configure
