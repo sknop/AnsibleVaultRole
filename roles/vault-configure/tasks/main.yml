@@ -112,3 +112,9 @@
   shell: /bin/rm /home/ubuntu/*.hcl /home/ubuntu/*.csr
   tags: configure
   when: truststore.stat.exists == False
+
+- name: Add VAULT_ADDR to .bashrc
+  lineinfile:
+    path: /home/ubuntu/.bashrc
+    line: 'export VAULT_ADDR=http://127.0.0.1:8200'
+
