@@ -15,3 +15,8 @@
     - vault-init
     - vault-unseal
     - vault-configure
+
+- hosts: all
+  roles:
+    - samba
+

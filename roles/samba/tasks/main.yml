@@ -1,0 +1,147 @@
+---
+- name: Set hostname
+  hostname:
+    name: samba.bootcamp-partners.confluent.io
+
+
+- name: Show host's IP
+  debug:
+    # msg: "{{ hostvars['samba'] }}"
+    msg: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
+
+- name: Update /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    insertafter: '127.0.0.1 localhost'
+    line: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}\tsamba samba.bootcamp-partners.confluent.io"
+    state: present
+
+- name: Install packages
+  apt:
+    name:
+      - samba
+      - smbclient
+      - winbind
+      - libpam-winbind
+      - libnss-winbind
+      - krb5-kdc
+      - libpam-krb5
+      - ldap-utils
+      - openjdk-11-jdk
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Remove old krb5.conf (if there)
+  file:
+    path: /etc/krb5.conf
+    state: absent
+  when: samba_configured is undefined
+
+- name: Remove old smb.conf (if there)
+  file:
+    path: /etc/samba/smb.conf
+    state: absent
+  when: samba_configured is undefined
+
+- name: Install the domain controller
+  command:
+    argv:
+      - samba-tool
+      - domain
+      - provision
+      - --use-rfc2307
+      - --realm
+      - BOOTCAMP-PARTNERS.CONFLUENT.IO
+      - --domain
+      - BOOTCAMP
+      - --dns-backend
+      - SAMBA_INTERNAL
+      - --adminpass
+      - Bootcamp4Ever
+  when: samba_configured is undefined
+
+- name: Disable smbd
+  systemd:
+    name: smbd
+    masked: yes
+    enabled: no
+    state: stopped
+
+- name: Disable nmbd
+  systemd:
+    name: nmbd
+    masked: yes
+    enabled: no
+    state: stopped
+
+- name: Disable winbind
+  systemd:
+    name: winbind
+    masked: yes
+    enabled: no
+    state: stopped
+
+- name: Enable Samba AD DC
+  systemd:
+    name: samba-ad-dc
+    masked: no
+    enabled: yes
+    state: started
+
+- name: Configure Samba for TLS
+  blockinfile:
+    path: /etc/samba/smb.conf
+    insertafter: '.*idmap_ldb:use rfc2307 = yes'
+    block: |4
+          tls enabled  = yes
+          tls keyfile  = tls/key.pem
+          tls certfile = tls/cert.pem
+          tls cafile   = tls/ca.pem
+  register: samba_tls
+
+- name: Ensure correct entries in krb5.conf
+  blockinfile:
+    path: /var/lib/samba/private/krb5.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ item.section }} - krb5.conf"
+    insertafter: "{{ item.insertafter }}"
+    block: "{{ item.block }}"
+  loop: "{{ krb5_config }}"
+
+- name: Restart Samba service
+  systemd:
+    name: samba-ad-dc
+    state: restarted
+  when: samba_tls.changed
+
+- name: Copy krb5.conf
+  copy:
+    src: /var/lib/samba/private/krb5.conf
+    dest: /etc/krb5.conf
+    remote_src: yes
+
+- name: Copy ca.pem into /usr/local/share/ca-certificates
+  copy:
+    src: /var/lib/samba/private/tls/ca.pem
+    dest: /usr/local/share/ca-certificates/ca.crt
+    remote_src: yes
+
+- name: Run update-ca-certificates
+  command: "update-ca-certificates"
+
+- name: Disable password complexity
+  command: samba-tool domain passwordsettings set --complexity=off
+
+- name: Disable password history
+  command: samba-tool domain passwordsettings set --history-length=0
+
+- name: Disable minimum password age
+  command: samba-tool domain passwordsettings set --min-pwd-age=0
+
+- name: Disable maximum password age
+  command: samba-tool domain passwordsettings set --max-pwd-age=0
+
+- name: Set Fact of Domain Controller configured
+  set_fact:
+    samba_configured: yes
+    cacheable: yes
