@@ -19,4 +19,5 @@
 - hosts: all
   roles:
     - samba
+    - samba-configure
 

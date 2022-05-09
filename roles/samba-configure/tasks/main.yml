@@ -1,0 +1,15 @@
+---
+# Copy LDIF directory to target
+
+- name: Copy ldifs directory to remote
+  copy:
+    src: "{{ playbook_dir }}/ldifs"
+    dest: /home/ubuntu/
+    owner: ubuntu
+    group: ubuntu
+
+- name: Add OU=Kafka
+  shell: ldapadd -H ldaps://samba.bootcamp-partners.confluent.io -D Administrator@BOOTCAMP-PARTNERS.CONFLUENT.IO  -w Bootcamp4Ever -f ldifs/kafka.ldif
+
+- name: Add OU=Users and OU=Services
+  shell: ldapadd -H ldaps://samba.bootcamp-partners.confluent.io -D Administrator@BOOTCAMP-PARTNERS.CONFLUENT.IO  -w Bootcamp4Ever -f ldifs/ou.ldif
