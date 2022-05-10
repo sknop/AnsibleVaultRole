@@ -28,6 +28,7 @@
       - libpam-krb5
       - ldap-utils
       - openjdk-11-jdk
+      - python3-ldap3
     state: present
     update_cache: true
     cache_valid_time: 3600

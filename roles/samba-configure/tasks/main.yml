@@ -10,6 +10,12 @@
 
 - name: Add OU=Kafka
   shell: ldapadd -H ldaps://samba.bootcamp-partners.confluent.io -D Administrator@BOOTCAMP-PARTNERS.CONFLUENT.IO  -w Bootcamp4Ever -f ldifs/kafka.ldif
+  register: ldapadd_result
+  changed_when: ldapadd_result.rc == 0
+  failed_when: ldapadd_result.rc != 0 and ldapadd_result.rc != 68
 
 - name: Add OU=Users and OU=Services
   shell: ldapadd -H ldaps://samba.bootcamp-partners.confluent.io -D Administrator@BOOTCAMP-PARTNERS.CONFLUENT.IO  -w Bootcamp4Ever -f ldifs/ou.ldif
+  register: ldapadd_result
+  changed_when: ldapadd_result.rc == 0
+  failed_when: ldapadd_result.rc != 0 and ldapadd_result.rc != 68
