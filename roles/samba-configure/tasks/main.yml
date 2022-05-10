@@ -19,3 +19,11 @@
   register: ldapadd_result
   changed_when: ldapadd_result.rc == 0
   failed_when: ldapadd_result.rc != 0 and ldapadd_result.rc != 68
+
+- name: Copy scripts directory to remote
+  copy:
+    src: "{{ playbook_dir }}/scripts"
+    dest: /home/ubuntu
+    owner: ubuntu
+    group: ubuntu
+

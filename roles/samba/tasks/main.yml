@@ -132,6 +132,8 @@
 
 - name: Run update-ca-certificates
   command: "update-ca-certificates"
+  register: update_ca
+  changed_when: "'0 added, 0 removed; done.' not in update_ca.stdout"
 
 - name: Disable password complexity
   command: samba-tool domain passwordsettings set --complexity=off
