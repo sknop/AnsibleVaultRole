@@ -143,6 +143,7 @@
 - name: Get password settings from samba-tool
   command: samba-tool domain passwordsettings show
   register: password_settings
+  changed_when: false
 
 #  Returns a list of information like this
 # Password information for domain 'DC=bootcamp-partners,DC=confluent,DC=io'
@@ -167,11 +168,32 @@
   command: samba-tool domain passwordsettings set --complexity=off
   when: password_complexity == "on"
 
+- name: Get History Length
+  set_fact:
+    history_length: "{{ password_settings.stdout | regex_search(regexp, '\\1') | first}}"
+  vars:
+    regexp: 'Password history length: (.*)'
+
 - name: Disable password history
   command: samba-tool domain passwordsettings set --history-length=0
+  when: history_length != "0"
+
+- name: Get Minimum Password Age
+  set_fact:
+    minimum_password_age: "{{ password_settings.stdout | regex_search(regexp, '\\1') | first}}"
+  vars:
+    regexp: 'Minimum password age \(days\): (.*)'
 
 - name: Disable minimum password age
   command: samba-tool domain passwordsettings set --min-pwd-age=0
+  when: minimum_password_age != "0"
+
+- name: Get Maximum Password Age
+  set_fact:
+    maximum_password_age: "{{ password_settings.stdout | regex_search(regexp, '\\1') | first}}"
+  vars:
+    regexp: 'Maximum password age \(days\): (.*)'
 
 - name: Disable maximum password age
   command: samba-tool domain passwordsettings set --max-pwd-age=0
+  when: maximum_password_age != "0"
