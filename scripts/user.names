@@ -7,5 +7,6 @@
     "fritz" : [ "Fritz Walter", "fritz-secret" ],
     "greta" : [ "Greta Thunberg", "greta-secret" ],
     "hans" : [ "Hans Zimmer", "hans-secret"],
+    "kafka" : [ "Kafka Superuser", "kafka-secret" ],
     "mds" : [ "mds", "mds-secret"]
 }
