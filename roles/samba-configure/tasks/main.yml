@@ -14,8 +14,14 @@
   changed_when: ldapadd_result.rc == 0
   failed_when: ldapadd_result.rc != 0 and ldapadd_result.rc != 68
 
-- name: Add OU=Users and OU=Services
+- name: Add OU=Users, OU=Services , and OU=Groups
   shell: ldapadd -H ldaps://samba.bootcamp-partners.confluent.io -D Administrator@BOOTCAMP-PARTNERS.CONFLUENT.IO  -w Bootcamp4Ever -f ldifs/ou.ldif
+  register: ldapadd_result
+  changed_when: ldapadd_result.rc == 0
+  failed_when: ldapadd_result.rc != 0 and ldapadd_result.rc != 68
+
+- name: Add Groups
+  shell: ldapadd -H ldaps://samba.bootcamp-partners.confluent.io -D Administrator@BOOTCAMP-PARTNERS.CONFLUENT.IO  -w Bootcamp4Ever -f ldifs/groups.ldif
   register: ldapadd_result
   changed_when: ldapadd_result.rc == 0
   failed_when: ldapadd_result.rc != 0 and ldapadd_result.rc != 68
