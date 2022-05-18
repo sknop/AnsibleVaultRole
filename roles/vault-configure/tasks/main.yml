@@ -64,6 +64,11 @@
   tags: configure
   when: truststore.stat.exists == False
 
+- name: Create samba-server role
+  shell: vault write kafka-int-ca/roles/samba-server  enforce_hostnames=false allow_client=true allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=43800h
+  tags: configure
+  when: truststore.stat.exists == False
+
 - name: Create client policy file
   template:
     src: kafka-client.j2
@@ -98,6 +103,23 @@
   tags: configure
   when: truststore.stat.exists == False
 
+- name: Create samba server policy file
+  template:
+    src: samba-server.j2
+    dest: /home/ubuntu/samba-server.hcl
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Apply samba server policy
+  shell: vault policy write samba-server samba-server.hcl
+  tags: configure
+  when: truststore.stat.exists == False
+
+- name: Permit server token
+  shell: vault write auth/token/roles/samba-server allowed_policies=samba-server period=24h
+  tags: configure
+  when: truststore.stat.exists == False
+
 - name: Create the trust store
   shell: keytool -import -alias root-ca -trustcacerts -file root-ca.pem -keystore kafka-truststore.jks --storepass changeme -noprompt
   tags: configure
@@ -118,3 +140,12 @@
     path: /home/ubuntu/.bashrc
     line: 'export VAULT_ADDR=http://127.0.0.1:8200'
 
+- name: Create samba token
+  shell: vault token create -role samba-server -format table | grep token | grep -v token_ | awk '{ print $2 }'
+  register: samba_token
+
+- name: Create Samba certificate
+  shell: VAULT_TOKEN="{{ samba_token.stdout }}" vault write -field certificate kafka-int-ca/issue/samba-server common_name=samba.bootcamp-partners.confluent.io format=pem_bundle > samba.pem
+
+- name: Extract samba key from cert
+  shell: openssl pkey -in samba.pem -out key.pem
