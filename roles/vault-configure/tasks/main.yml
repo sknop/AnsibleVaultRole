@@ -149,3 +149,4 @@
 
 - name: Extract samba key from cert
   shell: openssl pkey -in samba.pem -out key.pem
+

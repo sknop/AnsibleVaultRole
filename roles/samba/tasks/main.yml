@@ -98,6 +98,25 @@
     enabled: yes
     state: started
 
+- name: Copy kafka-int-ca.pem into /var/lib/samba/private/tls
+  copy:
+    src: /home/ubuntu/kafka-int-ca.pem
+    dest: /var/lib/samba/private/tls/ca.pem
+    remote_src: yes
+
+- name: Copy samba certificate into /var/lib/samba/private/tls
+  copy:
+    src: /home/ubuntu/samba.pem
+    dest: /var/lib/samba/private/tls/cert.pem
+    remote_src: yes
+
+- name: Copy key into /var/lib/samba/private/tls
+  copy:
+    src: /home/ubuntu/key.pem
+    dest: /var/lib/samba/private/tls/key.pem
+    mode: 0600
+    remote_src: yes
+
 - name: Configure Samba for TLS
   blockinfile:
     path: /etc/samba/smb.conf
@@ -129,10 +148,16 @@
     dest: /etc/krb5.conf
     remote_src: yes
 
-- name: Copy ca.pem into /usr/local/share/ca-certificates
+- name: Copy root-ca.pem into /usr/local/share/ca-certificates
   copy:
-    src: /var/lib/samba/private/tls/ca.pem
+    src: /home/ubuntu/root-ca.pem
     dest: /usr/local/share/ca-certificates/ca.crt
+    remote_src: yes
+
+- name: Copy kafka-int-ca.pem into /usr/local/share/ca-certificates
+  copy:
+    src: /home/ubuntu/kafka-int-ca.pem
+    dest: /usr/local/share/ca-certificates/intermediate-ca.crt
     remote_src: yes
 
 - name: Run update-ca-certificates

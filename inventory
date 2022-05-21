@@ -1,5 +1,5 @@
 [servers]
-vault ansible_host=63.34.12.40
+vault ansible_host=54.78.227.71
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
