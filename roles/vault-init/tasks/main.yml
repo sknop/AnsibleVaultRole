@@ -35,9 +35,13 @@
   with_indexed_items: "{{ vault_init_parsed.unseal_keys_hex }}"
   when: not vault_status.initialized | bool
 
+- name: Set vault_token fact
+  set_fact:
+    vault_token: "{{ vault_init_parsed.root_token }}"
+
 - name: Write root token to file
   copy:
-    content: "{{ vault_init_parsed.root_token }}"
+    content: "{{ vault_token }}"
     dest: "/home/ubuntu/.vault-token"
     mode: '0600'
     owner: ubuntu

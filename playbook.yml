@@ -20,4 +20,5 @@
   roles:
     - samba
     - samba-configure
+    - webservice
 

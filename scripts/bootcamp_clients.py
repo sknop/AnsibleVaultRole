@@ -57,7 +57,7 @@ class ClientGenerator:
         self.set_config('username', parser)
         self.set_config('password', parser)
         self.set_config('realm', parser)
-        self.set_config('base_dn', parser)
+        self.set_config('client_base_dn', parser)
 
     def init_logging(self):
         self.logger.setLevel(logging.INFO)  # change to INFO or DEBUG for more output
@@ -105,13 +105,13 @@ class ClientGenerator:
             self.create_keytab(user_name, password, filename)
             files.append(filename)
 
-            # filename = self.create_certificate(self.directories[1], principal)
-            # files.append(filename)
+            filename = self.create_certificate(self.directories[1], principal)
+            files.append(filename)
 
         self.archive_and_delete_files(files)
 
     def create_user(self, basedir, principal, cn, password):
-        dn = f"CN={cn},{self.base_dn}"
+        dn = f"CN={cn},{self.client_base_dn}"
         user_principal_name = f"{principal}@{self.realm}"
         sAMAccountName = principal
 

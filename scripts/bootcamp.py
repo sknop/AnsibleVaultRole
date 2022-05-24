@@ -58,7 +58,7 @@ class Generator:
         self.set_config('password', parser)
         self.set_config('realm', parser)
         self.set_config('service_password', parser)
-        self.set_config('base_dn', parser)
+        self.set_config('service_base_dn', parser)
         self.set_config('truststore_file', parser)
 
     def init_logging(self):
@@ -117,7 +117,7 @@ class Generator:
     def create_service_user(self, basedir, principal, host):
         short_host = host.split('.')[0]
         cn = f"{principal} {short_host}"
-        dn = f"CN={cn},{self.base_dn}"
+        dn = f"CN={cn},{self.service_base_dn}"
         service_name = f"{principal}/{host}"
         user_principal_name = f"{service_name}@{self.realm}"
 

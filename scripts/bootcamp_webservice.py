@@ -4,6 +4,8 @@ import logging
 from flask import Flask, request, json, send_file, render_template
 from werkzeug.exceptions import HTTPException
 from bootcamp import Generator
+from bootcamp_clients import ClientGenerator
+
 import json
 import sys
 import os
@@ -14,13 +16,14 @@ app = Flask(__name__)
 
 BOOTCAMP_CONFIG_FILENAME_CONFIG = 'BOOTCAMP_CONFIG_FILENAME'
 CONFIG_FILE = "config-file"
-CLIENT_FILE = "clients.zip"
+
 
 def format_stacktrace():
     parts = ["Traceback (most recent call last):\n"]
     parts.extend(traceback.format_stack(limit=25)[:-2])
     parts.extend(traceback.format_exception(*sys.exc_info())[1:])
     return "".join(parts)
+
 
 @app.errorhandler(Exception)
 def handle_exception(error):
@@ -32,6 +35,7 @@ def handle_exception(error):
     logger = logging.getLogger('bootcamp')
     logger.exception(error)
     return render_template("500_generic.html", exception=format_stacktrace()), 500
+
 
 @app.route('/generate', methods=['POST'])
 def invoke_generator():
@@ -61,19 +65,34 @@ def verify_input():
 
     return data_bytes
 
-@app.route('/client/defaults', methods=['GET'])
-def get_default_clients():
-    client_filename = CLIENT_FILE
-    result = send_file(client_filename, attachment_filename=client_filename, mimetype='application/zip')
+
+@app.route('/clients', methods=['POST'])
+def invoke_client_generator():
+    logger = logging.getLogger('bootcamp')
+    data_bytes = request.data
+    clients = json.loads(data_bytes)
+
+    tmpdir = tempfile.TemporaryDirectory(prefix='bootcamp_clients_')
+
+    logger.info(f"Created {tmpdir}")
+
+    config_file = find_config_file()
+
+    generator = ClientGenerator(tmpdir.name, config_file, clients, "web-user")
+    filename = os.path.join(tmpdir.name, generator.zip_file_name)
+
+    result = send_file(filename, attachment_filename=filename, mimetype='application/zip')
 
     return result
 
+
 def find_config_file():
+    config_file = "/home/ubuntu/scripts/create-services.properties"
+
     if CONFIG_FILE in app.config:
         config_file = app.config[CONFIG_FILE]
-    else:
-        if BOOTCAMP_CONFIG_FILENAME_CONFIG in os.environ:
-            config_file = os.environ[BOOTCAMP_CONFIG_FILENAME_CONFIG]
+    elif BOOTCAMP_CONFIG_FILENAME_CONFIG in os.environ:
+        config_file = os.environ[BOOTCAMP_CONFIG_FILENAME_CONFIG]
 
     if os.path.exists(config_file):
         return os.path.abspath(config_file)
