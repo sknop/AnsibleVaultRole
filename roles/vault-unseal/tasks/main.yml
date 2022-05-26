@@ -6,6 +6,7 @@
   failed_when:
     - vault_status_raw.rc == 1
   tags: unseal
+  changed_when: false
 
 - name: save vault_status
   set_fact:
