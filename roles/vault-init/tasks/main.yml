@@ -11,6 +11,7 @@
   register: vault_status_raw
   failed_when:
     - vault_status_raw.rc == 1
+  changed_when: false
 
 - name: save vault_status
   set_fact:

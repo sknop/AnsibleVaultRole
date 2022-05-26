@@ -3,7 +3,7 @@
 
 - name: Copy ldifs directory to remote
   copy:
-    src: "{{ playbook_dir }}/ldifs"
+    src: ldifs
     dest: /home/ubuntu/
     owner: ubuntu
     group: ubuntu
@@ -12,6 +12,7 @@
 - name: List files in remote directory
   shell: ls -d /home/ubuntu/ldifs/*
   register: ldif_files
+  changed_when: false
 
 - name: Add LDIFS
   shell: ldapadd -H ldaps://samba.bootcamp-partners.confluent.io -D Administrator@BOOTCAMP-PARTNERS.CONFLUENT.IO  -w Bootcamp4Ever -f "{{ item }}"
