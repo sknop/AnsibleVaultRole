@@ -1,0 +1,7 @@
+dn: CN=Donald Duck,OU=Users,OU=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
+objectClass: user
+accountExpires: 0
+userPrincipalName: donald@BOOTCAMP-PARTNERS.CONFLUENT.IO
+sAMAccountName: donald
+userAccountControl: 66048
+unicodePwd:: IgBkAG8AbgBhAGwAZAAtAHMAZQBjAHIAZQB0ACIA

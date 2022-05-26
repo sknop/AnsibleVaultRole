@@ -1,0 +1,7 @@
+dn: CN=Greta Thunberg,OU=Users,OU=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
+objectClass: user
+accountExpires: 0
+userPrincipalName: greta@BOOTCAMP-PARTNERS.CONFLUENT.IO
+sAMAccountName: greta
+userAccountControl: 66048
+unicodePwd:: IgBnAHIAZQB0AGEALQBzAGUAYwByAGUAdAAiAA==

@@ -1,0 +1,7 @@
+dn: CN=Barnie Rubble,OU=Users,OU=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
+objectClass: user
+accountExpires: 0
+userPrincipalName: barnie@BOOTCAMP-PARTNERS.CONFLUENT.IO
+sAMAccountName: barnie
+userAccountControl: 66048
+unicodePwd:: IgBiAGEAcgB0AC0AcwBlAGMAcgBlAHQAIgA=
