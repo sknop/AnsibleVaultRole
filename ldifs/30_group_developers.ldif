@@ -2,8 +2,3 @@ dn: cn=Developers,ou=Groups,ou=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
 objectClass: group
 cn: Developers
 gidNumber: 5000
-
-dn: cn=Admins,ou=Groups,ou=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
-objectClass: group
-cn: Admins
-gidNumber: 5001

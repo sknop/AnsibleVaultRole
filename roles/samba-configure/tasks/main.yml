@@ -8,23 +8,17 @@
     owner: ubuntu
     group: ubuntu
 
-- name: Add OU=Kafka
-  shell: ldapadd -H ldaps://samba.bootcamp-partners.confluent.io -D Administrator@BOOTCAMP-PARTNERS.CONFLUENT.IO  -w Bootcamp4Ever -f ldifs/kafka.ldif
-  register: ldapadd_result
-  changed_when: ldapadd_result.rc == 0
-  failed_when: ldapadd_result.rc != 0 and ldapadd_result.rc != 68
+# ls -d returns the directory, with * the full path
+- name: List files in remote directory
+  shell: ls -d /home/ubuntu/ldifs/*
+  register: ldif_files
 
-- name: Add OU=Users, OU=Services , and OU=Groups
-  shell: ldapadd -H ldaps://samba.bootcamp-partners.confluent.io -D Administrator@BOOTCAMP-PARTNERS.CONFLUENT.IO  -w Bootcamp4Ever -f ldifs/ou.ldif
+- name: Add LDIFS
+  shell: ldapadd -H ldaps://samba.bootcamp-partners.confluent.io -D Administrator@BOOTCAMP-PARTNERS.CONFLUENT.IO  -w Bootcamp4Ever -f "{{ item }}"
   register: ldapadd_result
   changed_when: ldapadd_result.rc == 0
   failed_when: ldapadd_result.rc != 0 and ldapadd_result.rc != 68
-
-- name: Add Groups
-  shell: ldapadd -H ldaps://samba.bootcamp-partners.confluent.io -D Administrator@BOOTCAMP-PARTNERS.CONFLUENT.IO  -w Bootcamp4Ever -f ldifs/groups.ldif
-  register: ldapadd_result
-  changed_when: ldapadd_result.rc == 0
-  failed_when: ldapadd_result.rc != 0 and ldapadd_result.rc != 68
+  with_items: "{{ ldif_files.stdout_lines }}"
 
 - name: Copy scripts directory to remote
   copy:

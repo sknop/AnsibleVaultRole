@@ -38,6 +38,7 @@
 - name: Set vault_token fact
   set_fact:
     vault_token: "{{ vault_init_parsed.root_token }}"
+  when: not vault_status.initialized | bool
 
 - name: Write root token to file
   copy:
