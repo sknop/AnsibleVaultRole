@@ -1,0 +1,7 @@
+dn: CN=Rest Proxy,ou=Users,ou=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
+objectClass: user
+accountExpires: 0
+userPrincipalName: rest@BOOTCAMP-PARTNERS.CONFLUENT.IO
+sAMAccountName: rest
+userAccountControl: 66048
+unicodePwd:: IgByAGUAcwB0AC0AcwBlAGMAcgBlAHQAIgA=

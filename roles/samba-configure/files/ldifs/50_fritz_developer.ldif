@@ -1,0 +1,4 @@
+dn: CN=Developers,OU=Groups,OU=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
+changetype: modify
+add: member
+member: CN=Fritz Walter,OU=Users,OU=Kafka,DC=bootcamp-partners,DC=confluent,DC=io

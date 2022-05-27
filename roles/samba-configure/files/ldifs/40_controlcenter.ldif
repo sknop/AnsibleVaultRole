@@ -1,0 +1,7 @@
+dn: CN=Control Center,ou=Users,ou=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
+objectClass: user
+accountExpires: 0
+userPrincipalName: controlcenter@BOOTCAMP-PARTNERS.CONFLUENT.IO
+sAMAccountName: controlcenter
+userAccountControl: 66048
+unicodePwd:: IgBjADMALQBzAGUAYwByAGUAdAAiAA==
