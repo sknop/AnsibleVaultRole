@@ -1,7 +1,7 @@
-dn: CN=Charlie Sheen,OU=Users,OU=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
+dn: CN=Charlie Sheen,OU=Users,OU=Kafka,DC=bootcamp,DC=confluent,DC=io
 objectClass: user
 accountExpires: 0
-userPrincipalName: charlie@BOOTCAMP-PARTNERS.CONFLUENT.IO
+userPrincipalName: charlie@BOOTCAMP.CONFLUENT.IO
 sAMAccountName: charlie
 userAccountControl: 66048
 unicodePwd:: IgBjAGgAYQByAGwAaQBlAC0AcwBlAGMAcgBlAHQAIgA=

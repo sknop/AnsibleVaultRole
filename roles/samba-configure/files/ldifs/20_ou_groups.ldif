@@ -1,3 +1,3 @@
-dn: ou=Groups,ou=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
+dn: ou=Groups,ou=Kafka,DC=bootcamp,DC=confluent,DC=io
 objectClass: organizationalUnit
 ou: Groups

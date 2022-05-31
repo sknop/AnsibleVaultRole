@@ -1,7 +1,7 @@
-dn: CN=Alice LookingGlass,OU=Users,OU=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
+dn: CN=Alice LookingGlass,OU=Users,OU=Kafka,DC=bootcamp,DC=confluent,DC=io
 objectClass: user
 accountExpires: 0
-userPrincipalName: alice@BOOTCAMP-PARTNERS.CONFLUENT.IO
+userPrincipalName: alice@BOOTCAMP.CONFLUENT.IO
 sAMAccountName: alice
 userAccountControl: 66048
 unicodePwd:: IgBhAGwAaQBjAGUALQBzAGUAYwByAGUAdAAiAA==

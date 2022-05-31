@@ -1,7 +1,7 @@
-dn: CN=ksqlDB,ou=Users,ou=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
+dn: CN=ksqlDB,ou=Users,ou=Kafka,DC=bootcamp,DC=confluent,DC=io
 objectClass: user
 accountExpires: 0
-userPrincipalName: ksql@BOOTCAMP-PARTNERS.CONFLUENT.IO
+userPrincipalName: ksql@BOOTCAMP.CONFLUENT.IO
 sAMAccountName: ksql
 userAccountControl: 66048
 unicodePwd:: IgBrAHMAcQBsAC0AcwBlAGMAcgBlAHQAIgA=

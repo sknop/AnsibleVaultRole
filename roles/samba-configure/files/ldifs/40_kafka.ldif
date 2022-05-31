@@ -1,7 +1,7 @@
-dn: CN=Kafka Superuser,OU=Users,OU=Kafka,DC=bootcamp-partners,DC=confluent,DC=io
+dn: CN=Kafka Superuser,OU=Users,OU=Kafka,DC=bootcamp,DC=confluent,DC=io
 objectClass: user
 accountExpires: 0
-userPrincipalName: kafka@BOOTCAMP-PARTNERS.CONFLUENT.IO
+userPrincipalName: kafka@BOOTCAMP.CONFLUENT.IO
 sAMAccountName: kafka
 userAccountControl: 66048
 unicodePwd:: IgBrAGEAZgBrAGEALQBzAGUAYwByAGUAdAAiAA==
