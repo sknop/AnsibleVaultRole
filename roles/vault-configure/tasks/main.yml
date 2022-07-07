@@ -145,7 +145,7 @@
   register: samba_token
 
 - name: Create Samba certificate
-  shell: VAULT_TOKEN="{{ samba_token.stdout }}" vault write -field certificate kafka-int-ca/issue/samba-server common_name=samba.bootcamp.confluent.io format=pem_bundle > samba.pem
+  shell: VAULT_TOKEN="{{ samba_token.stdout }}" vault write -field certificate kafka-int-ca/issue/samba-server common_name=samba.bootcamp.confluent.io ttl=8760h format=pem_bundle > samba.pem
 
 - name: Extract samba key from cert
   shell: openssl pkey -in samba.pem -out key.pem
