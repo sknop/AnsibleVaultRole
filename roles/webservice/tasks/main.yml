@@ -9,7 +9,7 @@
 
 - name: Create service override directory
   file:
-    path: /etc/systemd/system/bootcamp-webservice.d
+    path: /etc/systemd/system/bootcamp-webservice.service.d
     state: directory
     recurse: yes
 
@@ -21,7 +21,7 @@
 - name: Create override file
   template:
     src: override.conf.j2
-    dest: /etc/systemd/system/bootcamp-webservice.d/override.conf
+    dest: /etc/systemd/system/bootcamp-webservice.service.d/override.conf
 
 - name: Enable bootcamp-webservice
   systemd:
