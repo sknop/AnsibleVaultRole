@@ -61,6 +61,10 @@ class Generator:
         self.set_config('service_base_dn', parser)
         self.set_config('truststore_file', parser)
 
+        self.logger.info("Environment: ")
+        for name, value in os.environ.items():
+            self.logger.info("{0}:{1}".format(name,value))
+
     def init_logging(self):
         self.logger.setLevel(logging.INFO)  # change to INFO or DEBUG for more output
 
