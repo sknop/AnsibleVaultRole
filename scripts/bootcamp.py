@@ -101,22 +101,48 @@ class Generator:
     def process_host_file(self):
         files = []
 
-        for principal, hosts in self.hosts.items():
-            for host in hosts:
-                print(f"{principal} --> {host}")
-                (service_name, filename) = self.create_service_user(self.directories[0], principal, host)
+        host_format = self.check_host_version()
 
-                self.create_keytab(service_name, filename)
-                files.append(filename)
+        if host_format == 1:
+            for principal, host_list in self.hosts.items():
+                for host in host_list:
+                    print(f"{principal} --> {host}")
+                    (service_name, filename) = self.create_service_user(self.directories[0], principal, host)
 
-                filename = self.create_certificate(self.directories[1], principal, host)
-                files.append(filename)
+                    self.create_keytab(service_name, filename)
+                    files.append(filename)
+
+                    filename = self.create_certificate(self.directories[1], principal, host)
+                    files.append(filename)
+        else:
+            for principal, host_list in self.hosts.items():
+                if host_list:
+                    dns = host_list[0]
+                    alternate = host_list[1]
+                    for host_pair in zip(dns, alternate):
+                        print(f"{principal} --> {host_pair}")
+                        (service_name, filename) = self.create_service_user(self.directories[0], principal, host_pair[0])
+
+                        self.create_keytab(service_name, filename)
+                        files.append(filename)
+
+                        filename = self.create_certificate(self.directories[1], principal, host_pair[0], host_pair[1])
+                        files.append(filename)
 
         filename = self.copy_truststore(self.directories[1], self.truststore_file)
         if filename:
             files.append(filename)
 
         self.archive_and_delete_files(files)
+
+    def check_host_version(self):
+        for principal, host_list in self.hosts.items():
+            for host in host_list:
+                if type(host) == str:
+                    continue
+                elif type(host) == list:
+                    return 2
+        return 1
 
     def create_service_user(self, basedir, principal, host):
         short_host = host.split('.')[0]
@@ -173,7 +199,7 @@ class Generator:
         child.expect(prompt)
         child.sendline("q")
 
-    def create_certificate(self, basedir, principal, host):
+    def create_certificate(self, basedir, principal, host, alternate=None):
         # expect vault, openssl and keytool to be installed in the path
         filename = os.path.join(basedir, f"{host}-keystore.jks")
         pem_filename = os.path.join(basedir, f"{host}.pem")
@@ -181,8 +207,12 @@ class Generator:
 
         self.logger.info(f"Creating certificate with {pem_filename} {p12_filename} {filename}")
 
+        all_hosts = host
+        if alternate:
+            all_hosts = f"{host},{alternate}"
+
         command = f"vault write -field certificate kafka-int-ca/issue/kafka-server "\
-                  f"common_name=kafka.servers.kafka.bootcamp.confluent.io alt_names={host} format=pem_bundle".split()
+                  f"common_name={principal}.servers.kafka.bootcamp.confluent.io alt_names={all_hosts} format=pem_bundle".split()
         with open(pem_filename, 'w') as f:
             process = subprocess.Popen(command, stdout=f, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
