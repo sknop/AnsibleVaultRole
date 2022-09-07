@@ -1,4 +1,4 @@
-dn: cn=Services,ou=Groups,ou=Kafka,DC=bootcamp,DC=confluent,DC=io
+dn: cn=Services,ou=Groups,ou=Kafka,{{ldap_base}}
 changetype: modify
 add: member
-member: CN=ksqlDB,ou=Users,ou=Kafka,DC=bootcamp,DC=confluent,DC=io
+member: CN=ksqlDB,ou=Users,ou=Kafka,{{ldap_base}}

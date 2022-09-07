@@ -1,12 +1,23 @@
 ---
 # Copy LDIF directory to target
 
-- name: Copy ldifs directory to remote
-  copy:
-    src: ldifs
-    dest: /home/ubuntu/
+- name: Ensure directories exists on target
+  file:
+    state: directory
+    dest: "/home/ubuntu/{{ item.path }}"
     owner: ubuntu
     group: ubuntu
+  with_filetree: "{{ role_path }}/files/"
+  when: item.state == 'directory'
+
+- name: Copy files to target and process templates
+  template:
+    src: '{{ item.src }}'
+    dest: '/home/ubuntu/{{ item.path }}'
+    owner: ubuntu
+    group: ubuntu
+  with_filetree: "{{ role_path }}/files/"
+  when: (item.state == 'file') and ('html' not in item.src)
 
 # ls -d returns the directory, with * the full path
 - name: List files in remote directory
@@ -15,15 +26,8 @@
   changed_when: false
 
 - name: Add LDIFS
-  shell: ldapadd -H ldaps://samba.bootcamp.confluent.io -D Administrator@BOOTCAMP.CONFLUENT.IO  -w Bootcamp4Ever -f "{{ item }}"
+  shell: ldapadd -H ldaps://samba.{{domain_name}} -D Administrator@{{realm}}  -w Bootcamp4Ever -f "{{ item }}"
   register: ldapadd_result
   changed_when: ldapadd_result.rc == 0
   failed_when: ldapadd_result.rc != 0 and ldapadd_result.rc != 68
   with_items: "{{ ldif_files.stdout_lines }}"
-
-- name: Copy scripts directory to remote
-  copy:
-    src: "{{ playbook_dir }}/scripts"
-    dest: /home/ubuntu
-    owner: ubuntu
-    group: ubuntu

@@ -1,12 +1,12 @@
 ---
-- hosts: all
+- hosts: samba
   become: yes
   become_user: root
   become_method: sudo
   roles:
     - vault
 
-- hosts: all
+- hosts: samba
   vars:
     unseal_keys_dir_output: "/var/opt/vault/unsealKey"
   environment:
@@ -16,7 +16,7 @@
     - vault-unseal
     - vault-configure
 
-- hosts: all
+- hosts: samba
   roles:
     - samba
     - samba-configure

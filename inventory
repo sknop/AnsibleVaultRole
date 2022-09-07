@@ -1,6 +1,6 @@
 [servers]
-# vault ansible_host=54.78.227.71
-vault ansible_host=samba
+samba ansible_host=samba
+jumphost ansible_host=52.210.210.44
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
@@ -9,3 +9,6 @@ ansible_user=ubuntu
 ansible_become=true
 # ansible_ssh_private_key_file=/Users/Sven/IdeaProjects/bootcamp-vpc/bootcamp.pem
 ansible_ssh_private_key_file=/Users/Sven/terraform/bootcamp-vpc-asia/bootcamp.pem
+domain_name=bootcamp-partners.confluent.io
+realm={{domain_name | upper}}
+ldap_base={{ ['DC='] | product(realm.split('.')) | map('join') | join(',') }}

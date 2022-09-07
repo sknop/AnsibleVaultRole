@@ -1,7 +1,7 @@
 ---
 - name: Set hostname
   hostname:
-    name: samba.bootcamp.confluent.io
+    name: samba.{{domain_name}}
 
 
 - name: Show host's IP
@@ -13,7 +13,7 @@
   lineinfile:
     path: /etc/hosts
     insertafter: '127.0.0.1 localhost'
-    line: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}\tsamba samba.bootcamp.confluent.io"
+    line: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}\tsamba samba.{{domain_name}}"
     state: present
 
 - name: Install packages
@@ -62,7 +62,7 @@
       - provision
       - --use-rfc2307
       - --realm
-      - BOOTCAMP.CONFLUENT.IO
+      - '{{ realm }}'
       - --domain
       - BOOTCAMP
       - --dns-backend
@@ -172,7 +172,7 @@
   changed_when: false
 
 #  Returns a list of information like this
-# Password information for domain 'DC=bootcamp,DC=confluent,DC=io'
+# Password information for domain '{{ldap_base}}'
 #
 # Password complexity: off
 # Store plaintext passwords: off

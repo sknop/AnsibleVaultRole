@@ -1,4 +1,4 @@
-dn: CN=Eva Maria,OU=Users,OU=Kafka,DC=bootcamp,DC=confluent,DC=io
+dn: CN=Eva Maria,OU=Users,OU=Kafka,{{ldap_base}}
 objectClass: user
 accountExpires: 0
 userPrincipalName: eva@BOOTCAMP.CONFLUENT.IO

@@ -1,5 +1,5 @@
-dn: CN=Admins,OU=Groups,OU=Kafka,DC=bootcamp,DC=confluent,DC=io
+dn: CN=Admins,OU=Groups,OU=Kafka,{{ldap_base}}
 changetype: modify
 add: member
-member: CN=Charlie Sheen,OU=Users,OU=Kafka,DC=bootcamp,DC=confluent,DC=io
+member: CN=Charlie Sheen,OU=Users,OU=Kafka,{{ldap_base}}
 

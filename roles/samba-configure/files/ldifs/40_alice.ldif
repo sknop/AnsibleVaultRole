@@ -1,4 +1,4 @@
-dn: CN=Alice LookingGlass,OU=Users,OU=Kafka,DC=bootcamp,DC=confluent,DC=io
+dn: CN=Alice LookingGlass,OU=Users,OU=Kafka,{{ldap_base}}
 objectClass: user
 accountExpires: 0
 userPrincipalName: alice@BOOTCAMP.CONFLUENT.IO

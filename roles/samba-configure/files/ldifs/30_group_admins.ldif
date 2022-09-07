@@ -1,4 +1,4 @@
-dn: cn=Admins,ou=Groups,ou=Kafka,DC=bootcamp,DC=confluent,DC=io
+dn: cn=Admins,ou=Groups,ou=Kafka,{{ldap_base}}
 objectClass: group
 cn: Admins
 gidNumber: 5000
