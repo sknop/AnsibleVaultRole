@@ -1,4 +1,11 @@
 ---
+- hosts: all
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - domain
+
 - hosts: samba
   become: yes
   become_user: root
