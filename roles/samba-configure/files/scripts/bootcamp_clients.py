@@ -251,5 +251,5 @@ if __name__ == '__main__':
 
     users = load_users_file(user_file)
 
-    generator = ClientGenerator('', config, users, owner)
+    generator = ClientGenerator('.', config, users, owner)
     print(f"Created {generator.zip_file_name}")

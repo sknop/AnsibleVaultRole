@@ -291,5 +291,5 @@ if __name__ == '__main__':
 
     hosts = load_host_file(host_file)
 
-    generator = Generator('', config, hosts, owner)
+    generator = Generator('.', config, hosts, owner)
     print(f"Created {generator.zip_file_name}")
