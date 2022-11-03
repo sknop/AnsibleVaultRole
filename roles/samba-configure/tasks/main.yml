@@ -19,6 +19,15 @@
   with_filetree: "{{ role_path }}/files/"
   when: (item.state == 'file') and ('html' not in item.src)
 
+- name: Copy html files (not as template)
+  copy:
+    src: '{{ item.src }}'
+    dest: '/home/ubuntu/{{ item.path }}'
+    owner: ubuntu
+    group: ubuntu
+  with_filetree: "{{ role_path }}/files/"
+  when: (item.state == 'file') and ('html' in item.src)
+
 # ls -d returns the directory, with * the full path
 - name: List files in remote directory
   shell: ls -d /home/ubuntu/ldifs/*
