@@ -78,7 +78,7 @@ class ClientGenerator:
         self.logger.info(f"{key} : {parser[key]}")
 
     def connect_ldap(self):
-        ldap = Connection(self.ldaps_url, user=self.username, password=self.password, auto_bind=True)
+        ldap = Connection(self.ldaps_url, user=self.username, password=self.password, auto_bind='DEFAULT')
         self.logger.info(ldap)
 
         return ldap
@@ -172,7 +172,7 @@ class ClientGenerator:
         self.logger.info(f"Creating certificate with {pem_filename} {p12_filename} {filename}")
 
         command = f"vault write -field certificate kafka-int-ca/issue/kafka-client " \
-                  f"common_name={principal}.clients.kafka.bootcamp.confluent.io format=pem_bundle".split()
+                  f"common_name={principal}.clients.kafka.{{realm}} format=pem_bundle".split()
         with open(pem_filename, 'w') as f:
             process = subprocess.Popen(command, stdout=f, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()

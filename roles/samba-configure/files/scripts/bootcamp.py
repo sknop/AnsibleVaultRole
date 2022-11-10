@@ -212,7 +212,7 @@ class Generator:
             all_hosts = f"{host},{alternate}"
 
         command = f"vault write -field certificate kafka-int-ca/issue/kafka-server "\
-                  f"common_name={principal}.servers.kafka.bootcamp.confluent.io alt_names={all_hosts} format=pem_bundle".split()
+                  f"common_name={principal}.servers.kafka.{{realm}} alt_names={all_hosts} format=pem_bundle".split()
         with open(pem_filename, 'w') as f:
             process = subprocess.Popen(command, stdout=f, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
