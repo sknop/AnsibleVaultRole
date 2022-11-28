@@ -158,7 +158,7 @@ class Generator:
             'accountExpires': '0',
             'msDS-SupportedEncryptionTypes': '31',  # enable encryption types explicitly
             'userPrincipalName': user_principal_name,
-            'sAMAAccountName': service_name,
+            'sAMAAccountName': cn,
             'servicePrincipalName': service_name
         }
 
@@ -173,8 +173,17 @@ class Generator:
         self.logger.info(self.ldap.result)
 
         # set the account active and password non-expiring
+        # also reset other attributes in case the user already exists
 
-        self.ldap.modify(dn, {"userAccountControl": [('MODIFY_REPLACE', 66048)]})
+        user_attrs = {
+            "userAccountControl": [('MODIFY_REPLACE', 66048)],
+            'msDS-SupportedEncryptionTypes': '31',  # enable encryption types explicitly
+            'userPrincipalName': user_principal_name,
+            'sAMAAccountName': cn,
+            'servicePrincipalName': service_name
+        }
+        self.ldap.modify(dn, user_attrs)
+
         self.logger.info(self.ldap.result)
 
         filename = os.path.join(basedir, f"{principal}-{short_host}.keytab")
