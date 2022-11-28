@@ -158,7 +158,7 @@ class Generator:
             'accountExpires': '0',
             'msDS-SupportedEncryptionTypes': '31',  # enable encryption types explicitly
             'userPrincipalName': user_principal_name,
-            'sAMAAccountName': cn,
+            'sAMAccountName': cn,
             'servicePrincipalName': service_name
         }
 
@@ -177,10 +177,10 @@ class Generator:
 
         user_attrs = {
             "userAccountControl": [('MODIFY_REPLACE', 66048)],
-            'msDS-SupportedEncryptionTypes': '31',  # enable encryption types explicitly
-            'userPrincipalName': user_principal_name,
-            'sAMAAccountName': cn,
-            'servicePrincipalName': service_name
+            'msDS-SupportedEncryptionTypes':  [('MODIFY_REPLACE', '31')],  # enable encryption types explicitly
+            'userPrincipalName':  [('MODIFY_REPLACE', user_principal_name)],
+            'sAMAccountName':  [('MODIFY_REPLACE', cn)],
+            'servicePrincipalName':  [('MODIFY_REPLACE', service_name)]
         }
         self.ldap.modify(dn, user_attrs)
 
