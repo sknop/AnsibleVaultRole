@@ -43,7 +43,7 @@ class Generator:
         self.disconnect_ldap()
 
         self.destroy_directories()
-        
+
     def initialise(self):
         parser = configparser.ConfigParser()
         with open(self.config_file) as f:
@@ -63,7 +63,7 @@ class Generator:
 
         self.logger.info("Environment: ")
         for name, value in os.environ.items():
-            self.logger.info("{0}:{1}".format(name,value))
+            self.logger.info("{0}:{1}".format(name, value))
 
     def init_logging(self):
         self.logger.setLevel(logging.INFO)  # change to INFO or DEBUG for more output
@@ -84,7 +84,7 @@ class Generator:
         self.logger.info(f"{key} : {parser[key]}")
 
     def connect_ldap(self):
-        ldap = Connection(self.ldaps_url, user=self.username, password=self.password, auto_bind=True)
+        ldap = Connection(self.ldaps_url, user=self.username, password=self.password, auto_bind='TLS_BEFORE_BIND')
         self.logger.info(ldap)
 
         return ldap
@@ -121,7 +121,8 @@ class Generator:
                     alternate = host_list[1]
                     for host_pair in zip(dns, alternate):
                         print(f"{principal} --> {host_pair}")
-                        (service_name, filename) = self.create_service_user(self.directories[0], principal, host_pair[0])
+                        (service_name, filename) = self.create_service_user(self.directories[0], principal,
+                                                                            host_pair[0])
 
                         self.create_keytab(service_name, filename)
                         files.append(filename)
@@ -155,7 +156,9 @@ class Generator:
             'objectClass': ['top', 'person', 'organizationalPerson', 'user'],
             'cn': cn,
             'accountExpires': '0',
+            'msDS-SupportedEncryptionTypes': '31',  # enable encryption types explicitly
             'userPrincipalName': user_principal_name,
+            'sAMAAccountName': service_name,
             'servicePrincipalName': service_name
         }
 
@@ -180,7 +183,8 @@ class Generator:
 
     def create_keytab(self, service_name, filename):
         # expects ktutil to be installed in the path
-        encryptions = ["aes256-cts", "aes128-cts", "rc4-hmac"]
+        # encryptions = ["aes256-cts", "aes128-cts", "rc4-hmac"]
+        encryptions = ["aes256-cts", "aes128-cts"]
 
         prompt = "ktutil:  "
 
@@ -211,20 +215,20 @@ class Generator:
         if alternate:
             all_hosts = f"{host},{alternate}"
 
-        command = f"vault write -field certificate kafka-int-ca/issue/kafka-server "\
+        command = f"vault write -field certificate kafka-int-ca/issue/kafka-server " \
                   f"common_name={principal}.servers.kafka.{{realm}} alt_names={all_hosts} format=pem_bundle".split()
         with open(pem_filename, 'w') as f:
             process = subprocess.Popen(command, stdout=f, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
             self.logger.info(stderr.decode('utf-8'))
 
-        command = f"openssl pkcs12 -inkey {pem_filename} -in {pem_filename} "\
+        command = f"openssl pkcs12 -inkey {pem_filename} -in {pem_filename} " \
                   f"-name {host} -export -out {p12_filename} -password pass:changeme".split()
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         self.logger.info(stderr.decode('utf-8'))
 
-        command = f"keytool -importkeystore -srcstorepass changeme -deststorepass changeme -destkeystore "\
+        command = f"keytool -importkeystore -srcstorepass changeme -deststorepass changeme -destkeystore " \
                   f"{filename} -srckeystore {p12_filename} -srcstoretype PKCS12".split()
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
@@ -250,7 +254,7 @@ class Generator:
             target_path = PurePath(target_dir, basename)
             shutil.copyfile(source_path.absolute(), target_path)
             target_name = target_path.as_posix()
-        
+
         return target_name
 
     def disconnect_ldap(self):

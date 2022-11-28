@@ -78,7 +78,7 @@ class ClientGenerator:
         self.logger.info(f"{key} : {parser[key]}")
 
     def connect_ldap(self):
-        ldap = Connection(self.ldaps_url, user=self.username, password=self.password, auto_bind='DEFAULT')
+        ldap = Connection(self.ldaps_url, user=self.username, password=self.password, auto_bind='TLS_BEFORE_BIND')
         self.logger.info(ldap)
 
         return ldap
