@@ -4,5 +4,5 @@
     path: /etc/systemd/resolved.conf
     regexp: "^#Domains="
     line: "Domains={{ domain_name }}"
-  notify: "restart systemd-resolved"
+  notify: "Restart systemd-resolved"
   tags: domain
