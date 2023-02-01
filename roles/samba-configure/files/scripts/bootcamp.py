@@ -118,7 +118,9 @@ class Generator:
             for principal, host_list in self.hosts.items():
                 if host_list:
                     dns = host_list[0]
-                    alternate = host_list[1]
+                    # Another wild hack. Join all the remaining alternates together in a list of strings
+                    # Separating each alternate DNS entry by a comma
+                    alternate = [','.join(h) for h in zip(*host_list[1:])]
                     for host_pair in zip(dns, alternate):
                         print(f"{principal} --> {host_pair}")
                         (service_name, filename) = self.create_service_user(self.directories[0], principal,
