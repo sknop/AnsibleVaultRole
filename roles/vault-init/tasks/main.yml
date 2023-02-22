@@ -1,13 +1,3 @@
-- name: Create unseal directories
-  file:
-    path: "{{ playbook_dir }}/unsealKeys"
-    state: directory
-    recurse: yes
-  delegate_to: localhost
-  vars:
-    ansible_become: no
-
-
 - name: Check status of vault
   shell: vault status -format=yaml
   environment:
@@ -32,16 +22,6 @@
   set_fact:
     vault_init_parsed: "{{ vault_init_results.stdout | from_json }}"
   when: not vault_status.initialized | bool
-
-- name: Write unseal keys to files
-  copy:
-    dest: "{{ playbook_dir }}/unsealKeys/unseal_key_{{ item.0 }}"
-    content: "{{ item.1 }}"
-  with_indexed_items: "{{ vault_init_parsed.unseal_keys_hex }}"
-  delegate_to: localhost
-  vars:
-    ansible_become: no
-
 
 - name: Set vault_token fact
   set_fact:
