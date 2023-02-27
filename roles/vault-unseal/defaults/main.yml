@@ -1,2 +1,0 @@
----
-unseal_keys_dir_output: "/var/opt/vault/unsealKey"
